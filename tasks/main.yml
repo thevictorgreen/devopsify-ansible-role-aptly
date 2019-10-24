@@ -1,5 +1,5 @@
 ---
-# tasks file for aptly
+# tasks file for Aptly
 - name: Update Repositories
   become: yes
   apt:
