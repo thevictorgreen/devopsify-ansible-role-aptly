@@ -1,6 +1,33 @@
 ---
-# tasks file for Aptly
+# tasks file for roles/aptly
 - name: Update Repositories
   become: yes
   apt:
     update_cache: yes
+
+- name: Create Aptly automation directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - '/root/.aptly_automate'
+
+- name: Upload aptly_init.sh File
+  become: yes
+  copy:
+    src: aptly_init.sh
+    dest: /root/.aptly_automate/aptly_init.sh
+
+- name: Change permissions on aptly_init.sh
+  become: yes
+  file:
+    path: /root/.aptly_automate/aptly_init.sh
+    mode: "u+rwx"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Run Aptly Initialization script
+  become: yes
+  command: /root/.aptly_automate/aptly_init.sh
+  args:
+    executable: /bin/bash
